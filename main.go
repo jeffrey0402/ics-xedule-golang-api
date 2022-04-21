@@ -16,19 +16,20 @@ import (
 
 const icsDir = "rooster.ics"
 
-// Deze URL is te halen bij XEDULE door op "feed" te drukken, en de URL hiervan te kopieren (openen in outlook, url staat in de melding, of in de JS console in de browser.)
 var url = goDotEnvVariable("FEED_URL")
 
 var lastUpdate = getFileDate()
 var events = getRoster()
 
 func main() {
+	updateFile(icsDir, url)
 
 	// Start api
 	handleRequests()
 }
 
 func handleRequests() {
+	//gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	// Gets all roster items for clasCode, if any.
@@ -67,7 +68,7 @@ func getClasses() func(c *gin.Context) {
 
 func getRoster() []gocal.Event {
 
-	// Timezone naam in ics: Timezone naam
+	// Timezone name in ics: Timezone name in go
 	var tzMapping = map[string]string{
 		"W. Europe Standard Time": "Europe/Amsterdam",
 	}
@@ -183,8 +184,8 @@ func getFileDate() time.Time {
 	if err != nil {
 		fmt.Println(err)
 	}
-	modifiedtime := file.ModTime()
-	return modifiedtime
+	modifiedTime := file.ModTime()
+	return modifiedTime
 }
 
 func unique[T comparable](s []T) []T {
@@ -205,7 +206,7 @@ func goDotEnvVariable(key string) string {
 	err := godotenv.Load(".env")
 
 	if err != nil {
-		log.Fatalf("Error loading .env file")
+		log.Fatalf("Error loading .env file, please make sure it exists in the same dir and contains FEED_URL!")
 	}
 
 	return os.Getenv(key)

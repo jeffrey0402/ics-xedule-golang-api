@@ -1,4 +1,4 @@
-module awesomeProject
+module icsApi
 
 go 1.18
 
